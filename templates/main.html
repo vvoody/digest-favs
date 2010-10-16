@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}
+{% endblock %}
+
+{% block body %}
+<script type="text/javascript">
+</script>
+
+      <div class=twitbox>
+        <h3>Your twitter id?</h3>
+        <form action="/" method="get">
+          <p><input id="id" type="text" name="id" size=20><!--
+          --><input type="submit" value="Get favs!">
+        </form>
+      </div>
+
+<!-- tweets body -->
+  <ul class=messages id="messages_body">
+ {% for tweet in tweets %}
+    <li><p>
+      <span>{{ tweet.content }}</span>
+<!---->
+ {% endfor %}
+  </ul>
+
+<div style="float: right;">
+<a href="/?id={{ id }}&p={{ page }}">Next</a>
+</div><br />
+{% endblock %}
