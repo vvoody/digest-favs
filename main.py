@@ -27,22 +27,12 @@ class MainHandler(webapp.RequestHandler):
         self.response.out.write(template.render(path, template_values))
 
     def get(self):
-        cookies = Cookies(self, max_age=2678400)  # one month expiration
         template_values = {}
         id_ = self.request.get("id")
-        instapaper_cookie = "instapaper" in cookies and cookies["instapaper"] or ""
-        instapaper_get = self.request.get("instapaper")
 
-        if instapaper_cookie == "" and id_ == "":
-            flashes = "First here? 'Howto' page will tell you howto fill up the fields below."
-        elif id_ == "":
+        if id_ == "":
             flashes = "Please tell us your twitter id."
-        elif instapaper_cookie == "" and instapaper_get == "":
-            flashes = "Please tell us the link location of your Instapaper's 'Read Later'."
         else:
-            if "instapaper" not in cookies:
-                cookies["instapaper"] = instapaper_get
-            template_values["instapaper"] = instapaper_cookie
             page = self.request.get("p")
             if page == "": page = "1"
             proxy = 'http://ydoovv.appspot.com/'
@@ -50,11 +40,15 @@ class MainHandler(webapp.RequestHandler):
             res = urlfetch.fetch(url)
             favs = json.loads(res.content)
             template_values = {"tweets": [], "id": id_, "page": int(page) + 1}
+            #self.response.out.write(favs)
             for fav in favs:
                 tweet = fav["text"]
                 urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', tweet)
+                url = ""
                 for url in urls:
                     tweet = tweet.replace(url, '<a href="%s">%s</a>' % (url, url))
+                #dd = urlfetch.fetch('http://api.longurl.org/v2/expand?url=%s&title=1&format=json' % url)
+                #meta = json.loads(dd.content)
                 template_values["tweets"].append({"content":"%s" % tweet, "inlineurl": "%s" % url})
             flashes = "Here is %s's favorites." % id_
             template_values["next"] = "yes"

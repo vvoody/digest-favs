@@ -4,8 +4,8 @@
 
 {% block body %}
 <script type="text/javascript">
-function _rlipb337145(url)
-{var title,d=document,l=d.location,href=url;
+function _rlipb337145(url, title)
+{var title=title,d=document,l=d.location,href=url;
 d.title = title = d.title.substring(12);
 if (href == 'http://www.instapaper.com/i4' || typeof iptstbt != 'undefined') { alert("The bookmarklet is correctly installed."); throw(0); }
 
@@ -113,7 +113,7 @@ var e=window.getSelection,
     s=String(e? e(): (k)? k(): (x?x.createRange().text: '')),
     e=encodeURIComponent,
     z=d.createElement('scr'+'ipt'),
-    p='a=&k={{ instapaper }}&u=' + e(href) + '&t=' + e(title) + '&s=' + e(s.length < 10240 ? s : '');
+    p='a=&k=&u=' + e(href) + '&t=' + e(title) + '&s=' + e(s.length < 10240 ? s : '');
     
     var b = '';
 
@@ -151,7 +151,7 @@ function _clipb337145_close()
         <h3>Your twitter id?</h3>
         <form action="/" method="get">
           <p><input id="id" type="text" name="id">
-            <input id="instapaper" type="text" name="instapaper">
+<!--            <input id="instapaper" type="text" name="instapaper"> -->
           <input type="submit" value="Get favs!">
         </form>
       </div>
@@ -161,7 +161,7 @@ function _clipb337145_close()
  {% for tweet in tweets %}
     <li><p>
       <span>{{ tweet.content }}</span>
-      <span class="bookmarklet" onClick="alert('{{ tweet.inlineurl }}');_rlipb337145('{{ tweet.inlineurl }}');void(0)">Read Later</span>
+      <span class="bookmarklet" onClick="alert('{{ tweet.inlineurl }}');_rlipb337145('{{ tweet.inlineurl }}, {{ tweet.title }}');void(0)">Read Later</span>
  {% endfor %}
   </ul>
 
