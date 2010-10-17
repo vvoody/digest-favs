@@ -40,16 +40,18 @@ class MainHandler(webapp.RequestHandler):
             res = urlfetch.fetch(url)
             favs = json.loads(res.content)
             template_values = {"tweets": [], "id": id_, "page": int(page) + 1}
-            #self.response.out.write(favs)
             for fav in favs:
-                tweet = fav["text"]
+                if "text" not in fav:
+                    self.response.out.write("%s" % favs)
+                    return
+                else:
+                    tweet = fav["text"]
                 urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', tweet)
                 url = ""
-                for url in urls:
+                for url in urls:  # not safe, what if have same urls?
                     tweet = tweet.replace(url, '<a href="%s">%s</a>' % (url, url))
-                #dd = urlfetch.fetch('http://api.longurl.org/v2/expand?url=%s&title=1&format=json' % url)
-                #meta = json.loads(dd.content)
                 template_values["tweets"].append({"content":"%s" % tweet, "inlineurl": "%s" % url})
+#                                                  "longurl": "%s" % longurl, "title": "%s" % title})
             flashes = "Here is %s's favorites." % id_
             template_values["next"] = "yes"
         template_values["flashes"] = flashes

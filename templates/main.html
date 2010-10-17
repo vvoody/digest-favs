@@ -4,9 +4,9 @@
 
 {% block body %}
 <script type="text/javascript">
-function _rlipb337145(url, title)
-{var title=title,d=document,l=d.location,href=url;
-d.title = title = d.title.substring(12);
+function _rlipb337145(inlineurl, inlinetitle)
+{var title=inlinetitle,d=document,l=d.location,href=inlineurl;
+//d.title = title = d.title.substring(12);
 if (href == 'http://www.instapaper.com/i4' || typeof iptstbt != 'undefined') { alert("The bookmarklet is correctly installed."); throw(0); }
 
 /* Google Reader parsing code by Pascal Laliberté */
@@ -161,7 +161,8 @@ function _clipb337145_close()
  {% for tweet in tweets %}
     <li><p>
       <span>{{ tweet.content }}</span>
-      <span class="bookmarklet" onClick="alert('{{ tweet.inlineurl }}');_rlipb337145('{{ tweet.inlineurl }}, {{ tweet.title }}');void(0)">Read Later</span>
+      <!--<span class="bookmarklet" onClick="alert('{{ tweet.inlineurl }}');_rlipb337145('{{ tweet.inlineurl }}, {{ tweet.title }}');void(0)">Read Later</span>-->
+      <a class="bookmarklet" href="javascript:void(0);" onClick="alert('{{ tweet.inlineurl }}');_rlipb337145('{{ tweet.inlineurl }}', '{{ tweet.title }}');void(0)">Read Later</a>
  {% endfor %}
   </ul>
 
