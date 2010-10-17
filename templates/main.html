@@ -148,7 +148,7 @@ function _clipb337145_close()
 
 // get the origin url and title of the shortened url.
 var xmlHttp;
-var obj = document.getElementById("flashes");
+var obj;// = document.getElementById("flashes");
 
 function createXMLHttpRequest()
  {
@@ -191,17 +191,18 @@ function longurl_handler()
         }
     }
     else {
-        obj.textContent = "Please wait...... We are getting the original url and title of the shortened url.";
+        //obj.textContent = "Please wait...... We are getting the original url and title of the shortened url.";
+        obj.textContent = "Saving..."
     }
 }
 
-function readlater(url)
+function readlater(o, url)
 {
+    obj = o;
     createXMLHttpRequest();
     xmlHttp.onreadystatechange = longurl_handler;
     xmlHttp.open("GET", "/freejump?nojump=1&title=1&url=" + url, true);
     xmlHttp.send(null);
-
 }
 </script>
 
@@ -220,7 +221,7 @@ function readlater(url)
     <li><p>
       <span>{{ tweet.content }}</span>
       <!--<span class="bookmarklet" onClick="alert('{{ tweet.inlineurl }}');_rlipb337145('{{ tweet.inlineurl }}, {{ tweet.title }}');void(0)">Read Later</span>-->
-      <a class="bookmarklet" href="javascript:void(0);" onClick="alert('{{ tweet.inlineurl }}');readlater('{{ tweet.inlineurl }}');">Read Later</a>
+      <a class="bookmarklet" href="javascript:void(0);" onClick="alert('{{ tweet.inlineurl }}');readlater(this, '{{ tweet.inlineurl }}');">Read Later</a>
  {% endfor %}
   </ul>
 
