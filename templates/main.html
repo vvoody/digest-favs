@@ -145,6 +145,64 @@ function _clipb337145_close()
     f.style.display = 'none'; 
     f.parentNode.removeChild(f);
 }
+
+// get the origin url and title of the shortened url.
+var xmlHttp;
+var obj = document.getElementById("flashes");
+
+function createXMLHttpRequest()
+ {
+ try
+    {
+   // Firefox, Opera 8.0+, Safari
+    xmlHttp=new XMLHttpRequest();
+    }
+ catch (e)
+    {
+
+  // Internet Explorer
+   try
+      {
+      xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+      }
+   catch (e)
+      {
+
+      try
+         {
+         xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+         }
+      catch (e)
+         {
+         alert("您的浏览器不支持AJAX！");
+         return false;
+         }
+      }
+    }
+}
+
+function longurl_handler()
+{
+    if (xmlHttp.readyState == 4) {
+        if (xmlHttp.status == 200) {
+            res = xmlHttp.responseText.split(":;;:");
+            _rlipb337145(res[0], res[1]);  // longurl & title
+            obj.textContent = "Saved!";
+        }
+    }
+    else {
+        obj.textContent = "Please wait...... We are getting the original url and title of the shortened url.";
+    }
+}
+
+function readlater(url)
+{
+    createXMLHttpRequest();
+    xmlHttp.onreadystatechange = longurl_handler;
+    xmlHttp.open("GET", "/freejump?nojump=1&title=1&url=" + url, true);
+    xmlHttp.send(null);
+
+}
 </script>
 
       <div class=twitbox>
@@ -162,7 +220,7 @@ function _clipb337145_close()
     <li><p>
       <span>{{ tweet.content }}</span>
       <!--<span class="bookmarklet" onClick="alert('{{ tweet.inlineurl }}');_rlipb337145('{{ tweet.inlineurl }}, {{ tweet.title }}');void(0)">Read Later</span>-->
-      <a class="bookmarklet" href="javascript:void(0);" onClick="alert('{{ tweet.inlineurl }}');_rlipb337145('{{ tweet.inlineurl }}', '{{ tweet.title }}');void(0)">Read Later</a>
+      <a class="bookmarklet" href="javascript:void(0);" onClick="alert('{{ tweet.inlineurl }}');readlater('{{ tweet.inlineurl }}');">Read Later</a>
  {% endfor %}
   </ul>
 

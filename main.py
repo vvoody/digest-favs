@@ -13,6 +13,7 @@ from django.utils import simplejson as json
 from google.appengine.ext.webapp import template
 
 from simplecookies import Cookies
+from freejump import FreejumpPage
 
 class MainHandler(webapp.RequestHandler):
     def get_(self):
@@ -42,7 +43,7 @@ class MainHandler(webapp.RequestHandler):
             template_values = {"tweets": [], "id": id_, "page": int(page) + 1}
             for fav in favs:
                 if "text" not in fav:
-                    self.response.out.write("%s" % favs)
+                    self.response.out.write("%s" % fav["error"])
                     return
                 else:
                     tweet = fav["text"]
@@ -62,6 +63,7 @@ def main():
     application = webapp.WSGIApplication(
         [
             (r'/', MainHandler),
+            (r'/freejump', FreejumpPage),
         ],
         debug=True)
     run_wsgi_app(application)
