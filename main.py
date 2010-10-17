@@ -36,7 +36,7 @@ class MainHandler(webapp.RequestHandler):
         else:
             page = self.request.get("p")
             if page == "": page = "1"
-            proxy = 'http://ydoovv.appspot.com/'
+            proxy = 'http://api.twitter.com/1/'
             url = '%s/favorites/%s.json?page=%s' % (proxy, id_, page)
             res = urlfetch.fetch(url)
             favs = json.loads(res.content)
@@ -49,15 +49,17 @@ class MainHandler(webapp.RequestHandler):
                     tweet = fav["text"]
                 urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', tweet)
                 url = ""
+                replaced_urls = {}
                 for url in urls:  # not safe, what if have same urls?
+                    if url in replaced_urls: continue
                     tweet = tweet.replace(url, '<a href="%s">%s</a>' % (url, url))
+                    replaced_urls[url] = True
                 template_values["tweets"].append({"content":"%s" % tweet, "inlineurl": "%s" % url})
 #                                                  "longurl": "%s" % longurl, "title": "%s" % title})
             flashes = "Here is %s's favorites." % id_
             template_values["next"] = "yes"
         template_values["flashes"] = flashes
         self.render(template_values)
-        #self.response.out.write(template_values["tweets"])
 
 def main():
     application = webapp.WSGIApplication(

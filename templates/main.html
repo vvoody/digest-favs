@@ -221,7 +221,7 @@ function readlater(o, url)
     <li><p>
       <span>{{ tweet.content }}</span>
       <!--<span class="bookmarklet" onClick="alert('{{ tweet.inlineurl }}');_rlipb337145('{{ tweet.inlineurl }}, {{ tweet.title }}');void(0)">Read Later</span>-->
-      <a class="bookmarklet" href="javascript:void(0);" onClick="alert('{{ tweet.inlineurl }}');readlater(this, '{{ tweet.inlineurl }}');">Read Later</a>
+      <a class="bookmarklet" href="javascript:void(0);" onClick="readlater(this, '{{ tweet.inlineurl }}');">Read Later</a>
  {% endfor %}
   </ul>
 
