@@ -61,11 +61,32 @@ class MainHandler(webapp.RequestHandler):
         template_values["flashes"] = flashes
         self.render(template_values)
 
+class HowtoPage(webapp.RequestHandler):
+    def get(self):
+        template_values = {"flashes": "An app that save links from your Twitter's Favorites to Instapaper."}
+        template_values["tweets"] = [{"content": "1. Login Instapaper.com"},
+                                     {"content": "2. Enter your Twitter id & press 'Get favs!'"},
+                                     {"content": "3. click 'Read Later' to save the link to Instapaper"},]
+        path = os.path.join(os.path.dirname(__file__), 'templates/howto.html')
+        self.response.out.write(template.render(path, template_values))
+
+class AboutPage(webapp.RequestHandler):
+    def get(self):
+        template_values = {"flashes": "About about."}
+        template_values["tweets"] = [{'content': 'Author: vvoody <a href="http://vvoody.org/">vvoody.org</a>'},
+                                     {'content': 'Contact: wxj.g.sh_A_T_gmail.com'},
+                                     {'content': 'Source: <a href="http://github.com/vvoody/digest-favs">digest-favs@github</a>'},
+                                     {'content': 'Contact: A Chinese blog <a href="http://vvoody.org/blog/?p=618">post</a> to know more.'},]
+        path = os.path.join(os.path.dirname(__file__), 'templates/about.html')
+        self.response.out.write(template.render(path, template_values))
+
 def main():
     application = webapp.WSGIApplication(
         [
             (r'/', MainHandler),
             (r'/freejump', FreejumpPage),
+            (r'/howto', HowtoPage),
+            (r'/about', AboutPage),
         ],
         debug=True)
     run_wsgi_app(application)

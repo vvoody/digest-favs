@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block body %}
+
+      <div class=twitbox>
+        <h3>Your twitter id?</h3>
+        <form action="/" method="get">
+          <p><input id="id" type="text" name="id">
+<!--            <input id="instapaper" type="text" name="instapaper"> -->
+          <input type="submit" value="Get favs!">
+        </form>
+      </div>
+
+<!-- tweets body -->
+  <ul class=messages id="messages_body">
+ {% for tweet in tweets %}
+    <li><span>{{ tweet.content }}</span>
+ {% endfor %}
+  </ul>
+
+{% endblock %}
