@@ -36,17 +36,16 @@ class MainHandler(webapp.RequestHandler):
         else:
             page = self.request.get("p")
             if page == "": page = "1"
-            proxy = 'http://api.twitter.com/1/'
+            proxy = 'http://ydoovv.appspot.com/'  # a twitter api proxy, or handle yourself
             url = '%s/favorites/%s.json?page=%s' % (proxy, id_, page)
             res = urlfetch.fetch(url)
             favs = json.loads(res.content)
+            if isinstance(favs, dict):  # {"request": "oooo", "error": "xxxx"}
+                self.response.out.write('%s}' % res.content.split(',')[0])
+                return
             template_values = {"tweets": [], "id": id_, "page": int(page) + 1}
             for fav in favs:
-                if "text" not in fav:
-                    self.response.out.write("%s" % fav["error"])
-                    return
-                else:
-                    tweet = fav["text"]
+                tweet = fav["text"]
                 urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', tweet)
                 url = ""
                 replaced_urls = {}
