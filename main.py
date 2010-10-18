@@ -41,7 +41,8 @@ class MainHandler(webapp.RequestHandler):
             res = urlfetch.fetch(url)
             favs = json.loads(res.content)
             if isinstance(favs, dict):  # {"request": "oooo", "error": "xxxx"}
-                self.response.out.write('%s}' % res.content.split(',')[0])
+                template_values["flashes"] = favs["error"]
+                self.render(template_values)
                 return
             template_values = {"tweets": [], "id": id_, "page": int(page) + 1}
             for fav in favs:
