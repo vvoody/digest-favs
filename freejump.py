@@ -49,10 +49,14 @@ class FreejumpPage(webapp.RequestHandler):
         if not url:
             self.response.out.write("Please give us the url...")
             return
-        actual_url = self.get_actual_url(url)
-        actual_title = ""
-        if title:
-            actual_title = self.get_title(actual_url)
+        try:
+            actual_url = self.get_actual_url(url)
+            actual_title = ""
+            if title:
+                actual_title = self.get_title(actual_url)
+        except:
+            self.error(400)
+            return
         if nojump:
             self.response.out.write("%s:;;:%s" % (actual_url,
                                                   actual_title and actual_title or ""))

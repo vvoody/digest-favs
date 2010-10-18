@@ -189,6 +189,9 @@ function longurl_handler()
             _rlipb337145(res[0], res[1]);  // longurl & title
             obj.textContent = "Saved!";
         }
+        if (xmlHttp.status == 400) {
+            obj.textContent = "Failed. Check your link or try again?";
+        }
     }
     else {
         //obj.textContent = "Please wait...... We are getting the original url and title of the shortened url.";
