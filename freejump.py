@@ -2,6 +2,7 @@ from google.appengine.ext import webapp
 from google.appengine.api import urlfetch
 from django.utils import simplejson as json
 from urllib2 import urlopen
+from urllib import quote as urlquote
 import re
 
 # Free jump the shorten url to the original long url
@@ -43,23 +44,30 @@ class FreejumpPage(webapp.RequestHandler):
         return t
 
     def get(self):
+        # just quote '\xd1cc' like strings
+        urlquote_reserved = ";/?:@&=+$,"
+
         url = self.request.get('url')
         title = self.request.get('title')
-        nojump = self.request.get('nojump')  # redirect to the long url by default 
+        nojump = self.request.get('nojump')  # redirect to the long url by default
+
+        # most of the input urls are 'utf8', our page enc & twitter's are 'utf8'
+        url = urlquote(url.encode('utf8'), safe=urlquote_reserved)
         if not url:
             self.response.out.write("Please give us the url...")
             return
         try:
-            actual_url = self.get_actual_url(url)
+            actual_url = urlquote(self.get_actual_url(url), safe=urlquote_reserved)
             actual_title = ""
             if title:
                 actual_title = self.get_title(actual_url)
-        except:
+        except Exception, e:
             self.error(400)
+            self.response.out.write(e)
             return
         if nojump:
             self.response.out.write("%s:;;:%s" % (actual_url,
                                                   actual_title and actual_title or ""))
         else:
-            self.redirect(res["long-url"])
+            self.redirect(actual_url)
 # End.
