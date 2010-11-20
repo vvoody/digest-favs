@@ -29,12 +29,12 @@ class FreejumpPage(webapp.RequestHandler):
         f = urlopen(url)
         for i in range(4):  # no 'title' tag in the beginning 4k of a page? WTF
             res = f.read(1024)
-            title_raw = re.findall('<title>.*</title>', res)
+            title_raw = re.findall('<title>.*</title>', res, flags=re.DOTALL)
             if title_raw: break
 
         if i == 3: return "No title found in your web page..."
 
-        title = title_raw[0][7:-8]  # strip 'title' tag
+        title = title_raw[0][7:-8].strip()  # strip 'title' tag & '\n', '\t'...
         for enc in ("utf-8", "gbk", "big5"):
             try:
                 t = title.decode(enc)
