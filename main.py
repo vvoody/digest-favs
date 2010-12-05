@@ -4,6 +4,7 @@
 
 import os
 import re
+import logging
 
 from google.appengine.ext import db
 from google.appengine.ext import webapp
@@ -39,7 +40,13 @@ class MainHandler(webapp.RequestHandler):
             proxy = 'http://ydoovv.appspot.com/'  # a twitter api proxy, or handle yourself
             url = '%s/favorites/%s.json?page=%s' % (proxy, id_, page)
             res = urlfetch.fetch(url)
-            favs = json.loads(res.content)
+            if res.content[0] not in ('[', '{'):
+                logging.error('BAD_FETCH: %s' % url)
+                template_values["flashes"] = 'Bad request!'
+                self.render(template_values)
+                return
+            else:
+                favs = json.loads(res.content)
             if isinstance(favs, dict):  # {"request": "oooo", "error": "xxxx"}
                 template_values["flashes"] = favs["error"]
                 self.render(template_values)
