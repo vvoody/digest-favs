@@ -4,6 +4,7 @@ from django.utils import simplejson as json
 from urllib2 import urlopen
 from urllib import quote as urlquote
 import re
+import logging
 
 # Free jump the shorten url to the original long url
 # Many shortend url services like bit.ly, j.mp are bloody damn
@@ -26,15 +27,25 @@ class FreejumpPage(webapp.RequestHandler):
     def get_title(self, url):
         """Get the title of the url."""
 
-        f = urlopen(url)
-        for i in range(4):  # no 'title' tag in the beginning 4k of a page? WTF
-            res = f.read(1024)
-            title_raw = re.findall('<title>.*</title>', res, flags=re.DOTALL)
-            if title_raw: break
+        try:
+            f = urlopen(url)
+        except Exception, reason:
+            logging.error(str(reason))
+            return str(reason)
 
-        if i == 3: return "No title found in your web page..."
+        html_head = ''
+        while True:
+            res = f.read(1024)
+            html_head += res
+            if not res or html_head.find('</head>') != -1: break
+
+        title_raw = re.findall('<title>.*</title>', html_head, flags=re.DOTALL)
 
         title = title_raw[0][7:-8].strip()  # strip 'title' tag & '\n', '\t'...
+        if not title:
+            logging.error('NO_TITLE: %s' % url)
+            return 'No title found in your web page...'
+
         for enc in ("utf-8", "gbk", "big5"):
             try:
                 t = title.decode(enc)
