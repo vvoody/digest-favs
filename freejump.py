@@ -56,7 +56,7 @@ class FreejumpPage(webapp.RequestHandler):
 
     def get(self):
         # just quote '\xd1cc' like strings
-        urlquote_reserved = ";/?:@&=+$,"
+        urlquote_reserved = ";/?:@&=+$,#"
 
         url = self.request.get('url')
         title = self.request.get('title')
